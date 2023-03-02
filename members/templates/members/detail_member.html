@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Member Detail{% endblock %}
+
+{% block content %}
+    <p>firstName: {{ member.firstName }}</p>
+
+    <p>lastName: {{ member.lastName }}</p>
+
+    <p>phone: {{ member.phone }}</p>
+
+    <a href="{% url 'update_member'  member.id%}">Update</a>
+
+    <a href="{% url 'delete_member'  member.id%}">Delete</a>
+{% endblock %}

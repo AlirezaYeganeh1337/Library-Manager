@@ -1,0 +1,68 @@
+{% extends "base-list.html" %}
+
+{% block title %}Returns{% endblock %}
+
+{% block caption %}
+    <a href="{% url 'create_return' %}" class="text-white bg-blue-500 hover:bg-blue-400 rounded-md p-2">
+        Return a book
+    </a>
+{% endblock %}
+
+{% block thead %}
+    <tr>
+        <th scope="col" class="px-6 py-3">
+            Borrower
+        </th>
+
+        <th scope="col" class="px-6 py-3">
+            Book
+        </th>
+
+        <th scope="col" class="px-6 py-3">
+            Borrow date
+        </th>
+
+        <th scope="col" class="px-6 py-3">
+            Due date
+        </th>
+
+        <th scope="col" class="px-6 py-3">
+            Return date
+        </th>
+
+        <th scope="col" class="px-6 py-3">
+            Fine
+        </th>
+
+        <th scope="col" class="px-6 py-3">
+            <span class="sr-only">Detail</span>
+        </th>
+    </tr>
+{% endblock %}
+
+{% block tbody %}
+    {% for return in returns %}
+        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <td class="px-6 py-4">{{ return.borrow.member }}</td>
+
+            <td class="px-6 py-4">{{ return.borrow.book }}</td>
+
+            <td class="px-6 py-4">{{ return.borrow.borrow_date }}</td>
+
+            <td class="px-6 py-4">{{ return.borrow.due_date }}</td>
+
+            <td class="px-6 py-4">{{ return.return_date }}</td>
+
+            <td class="px-6 py-4">{{ return.fine }}</td>
+
+            <td class="px-6 py-4 text-right">
+                <a
+                    href="{% url 'retrieve_return' return.id %}"
+                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                >
+                    Detail
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}

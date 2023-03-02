@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Return Detail{% endblock %}
+
+{% block content %}
+    {{ object }}
+
+    <a href="{% url 'update_return' object.id %}">Update</a>
+
+    <a href="{% url 'delete_return' object.id %}">Delete</a>
+{% endblock %}
