@@ -9,10 +9,11 @@
                 <a href="{% block caption_link %}{% endblock %}" class="text-white bg-blue-500 hover:bg-blue-400 rounded-md p-2">
                     {% block caption %}{% endblock %}
                 </a>
-
-                <a href="{% block base_url %}{% endblock %}" class="text-white bg-teal-500 hover:bg-teal-400 rounded-md p-2 ml-4">
-                    Remove Filters
-                </a>
+                {% if request.GET %}
+                    <a href="{% block base_url %}{% endblock %}" class="text-white bg-teal-500 hover:bg-teal-400 rounded-md p-2 ml-4">
+                        Remove Filters
+                    </a>
+                {% endif %}
             </caption>
 
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
