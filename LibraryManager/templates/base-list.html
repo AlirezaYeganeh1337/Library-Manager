@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% load tailwind_filters %}
+
+{% block content %}
+    <div class="w-full relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <caption class="px-5 py-8 text-lg font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+                <a href="{% block caption_link %}{% endblock %}" class="text-white bg-blue-500 hover:bg-blue-400 rounded-md p-2">
+                    {% block caption %}{% endblock %}
+                </a>
+
+                {% if request.GET %}
+                    <a href="{% block base_url %}{% endblock %}" class="text-white bg-teal-500 hover:bg-teal-400 rounded-md p-2 ml-4">
+                        Remove Filters
+                    </a>
+                {% endif %}
+            </caption>
+
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                {% block thead %}{% endblock %}
+            </thead>
+
+            <tbody>
+                {% block tbody %}{% endblock %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        window.onload = () => {
+            const inputs = Array.from(document.getElementsByTagName('input'));
+
+            const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
+
+            const urlParams = new URLSearchParams(window.location.search);
+
+            inputs.forEach((input) => {
+                const urlParamsValue = urlParams.get(input.name);
+
+                if (!urlParamsValue && input.type === 'checkbox') {
+                    input.indeterminate = true;
+                    return;
+                }
+
+                if (!urlParamsValue) {
+                    return;
+                }
+
+                if (input.type === 'checkbox') {
+                    input.checked = urlParamsValue.toLowerCase() === 'true';
+                } else {
+                    input.value = urlParamsValue;
+                }
+            });
+
+            checkboxes.forEach((checkbox) => {
+                checkbox.onclick = (event) => {
+                    const keyEvent = new KeyboardEvent('keypress', { key: 'Enter' });
+
+                    document.dispatchEvent(keyEvent);
+                };
+            });
+        };
+
+        document.onkeypress = (event) => {
+            if (event.key !== 'Enter') {
+                return;
+            }
+
+            event.preventDefault();
+
+            const { protocol, host, pathname } = window.location;
+
+            let url = `${protocol}//${host}${pathname}`;
+
+            const inputs = Array.from(document.getElementsByTagName('input')).filter(
+                i => i.value !== '' || (i.type === 'checkbox' && !i.indeterminate)
+            );
+
+            inputs.forEach((input, index) => {
+                if (!url.includes('?')) {
+                    url += '?';
+                }
+
+                url += `${input.name}=${input.value || input.checked}`;
+
+                if (index !== inputs.length - 1) {
+                    url += '&';
+                } else if (url.endsWith('&')) {
+                    url = url.slice(0, url.length - 1);
+                }
+            });
+
+            window.location.replace(url);
+        };
+    </script>
+{% endblock %}

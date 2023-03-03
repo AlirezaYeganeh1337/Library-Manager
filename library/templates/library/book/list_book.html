@@ -1,0 +1,157 @@
+{% extends "base-list.html" %}
+
+{% block title %}Books{% endblock %}
+
+{% block base_url %}{% url 'list_book' %}{% endblock %}
+
+{% block caption_link %}{% url 'create_book' %}{% endblock %}
+
+{% block caption %}
+    Add New Book
+{% endblock %}
+
+{% block thead %}
+    <tr>
+        <th scope="col" class="px-6 py-3">
+            Title
+        </th>
+
+        <th scope="col" class="px-6 py-3">
+            Author
+        </th>
+
+        <th scope="col" class="px-6 py-3">
+            Publisher
+        </th>
+
+        <th scope="col" class="px-6 py-3">
+            Category
+        </th>
+
+        <th scope="col" class="px-6 py-3">
+            Shelf
+        </th>
+
+        <th scope="col" class="px-6 py-3">
+            Available
+        </th>
+
+        <th scope="col" class="px-6 py-3">
+            Publish date
+        </th>
+
+        <th scope="col" class="w-28 px-6 py-3">
+            <span class="sr-only">Update</span>
+        </th>
+
+        <th scope="col" class="w-28 px-6 py-3">
+            <span class="sr-only">Delete</span>
+        </th>
+    </tr>
+
+    <tr>
+        <td class="py-2 pl-2 pr-1">
+            <input
+                type="text"
+                name="title"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search Book Title"
+            />
+        </td>
+
+        <td class="py-2 px-1">
+            <input
+                type="text"
+                name="author"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search Book Author"
+            />
+        </td>
+
+        <td class="py-2 px-1">
+            <input
+                type="text"
+                name="publisher"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search Book Publisher"
+            />
+        </td>
+
+        <td class="py-2 px-1">
+            <input
+                type="text"
+                name="category__name"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search Category Name"
+            />
+        </td>
+
+        <td class="py-2 px-1">
+            <input
+                type="text"
+                name="shelf__number"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search Shelf Number"
+            />
+        </td>
+
+        <td class="pl-5 mt-4 flex items-center">
+            <input
+                type="checkbox"
+                name="is_available"
+                name="is_available"
+                title="Is Book Available"
+                value=""
+                class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
+            />
+
+            <label for="is_available" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                Is Book Available
+            </label>
+        </td>
+
+        <td></td>
+
+        <td></td>
+
+        <td></td>
+    </tr>
+{% endblock %}
+
+{% block tbody %}
+    {% for book in books %}
+        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <td class="px-6 py-4">{{ book.title }}</td>
+
+            <td class="px-6 py-4">{{ book.author }}</td>
+
+            <td class="px-6 py-4">{{ book.publisher }}</td>
+
+            <td class="px-6 py-4">{{ book.category }}</td>
+
+            <td class="px-6 py-4">{{ book.shelf }}</td>
+
+            <td class="px-6 py-4">{{ book.is_available|yesno:"Yes,No" }}</td>
+
+            <td class="px-6 py-4">{{ book.publish_date }}</td>
+
+            <td class="px-6 py-4 text-right">
+                <a
+                    href="{% url 'update_book' book.id %}"
+                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                >
+                    Update
+                </a>
+            </td>
+
+            <td class="px-6 py-4 text-right">
+                <a
+                    href="{% url 'delete_book' book.id %}"
+                    class="font-medium text-red-600 dark:text-red-500 hover:underline"
+                >
+                    Delete
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}

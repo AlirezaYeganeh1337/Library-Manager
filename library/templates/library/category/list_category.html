@@ -1,0 +1,68 @@
+{% extends "base-list.html" %}
+
+{% block title %}Categories{% endblock %}
+
+{% block base_url %}{% url 'list_category' %}{% endblock %}
+
+{% block caption_link %}{% url 'create_category' %}{% endblock %}
+
+{% block caption %}
+    Add New Category
+{% endblock %}
+
+{% block thead %}
+    <tr>
+        <th scope="col" class="px-6 py-3">
+            Name
+        </th>
+
+        <th scope="col" class="w-28 px-6 py-3">
+            <span class="sr-only">Update</span>
+        </th>
+
+        <th scope="col" class="w-28 px-6 py-3">
+            <span class="sr-only">Delete</span>
+        </th>
+    </tr>
+
+    <tr>
+        <td class="py-2 pl-2 pr-1">
+            <input
+                type="text"
+                name="name"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search Category Name"
+            />
+        </td>
+
+        <td></td>
+
+        <td></td>
+    </tr>
+{% endblock %}
+
+{% block tbody %}
+    {% for category in categories %}
+        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <td class="px-6 py-4">{{ category.name }}</td>
+
+            <td class="px-6 py-4 text-right">
+                <a
+                    href="{% url 'update_category' category.id %}"
+                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                >
+                    Update
+                </a>
+            </td>
+
+            <td class="px-6 py-4 text-right">
+                <a
+                    href="{% url 'delete_category' category.id %}"
+                    class="font-medium text-red-600 dark:text-red-500 hover:underline"
+                >
+                    Delete
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
