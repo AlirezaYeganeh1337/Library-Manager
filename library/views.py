@@ -1,17 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
-
 from django.urls import reverse_lazy
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    DetailView,
-    ListView,
-    UpdateView,
-)
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
+from LibraryManager.utils import dynamic_query
 
 from .models import Book, Borrow, Category, Return, Shelf
-from LibraryManager.utils import dynamic_query
 
 
 class CreateShelf(LoginRequiredMixin, CreateView):
@@ -19,11 +13,6 @@ class CreateShelf(LoginRequiredMixin, CreateView):
     fields = "__all__"
     template_name = "library/shelf/create_shelf.html"
     success_url = reverse_lazy("list_shelf")
-
-
-class DetailShelf(LoginRequiredMixin, DetailView):
-    model = Shelf
-    template_name = "library/shelf/detail_shelf.html"
 
 
 class ListShelf(LoginRequiredMixin, ListView):
@@ -58,18 +47,14 @@ class CreateCategory(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("list_category")
 
 
-class DetailCategory(LoginRequiredMixin, DetailView):
-    model = Category
-    template_name = "library/category/detail_category.html"
-
-
 class ListCategory(ListView):
     model = Category
     context_object_name = "categories"
-    template_name = "library/category/list_categories.html"
+    template_name = "library/category/list_category.html"
 
     def get_queryset(self):
         model_fields = [field.name for field in self.model._meta.fields]
+
         return self.model.objects.all().filter(
             **dynamic_query(self.request.GET.items(), model_fields)
         )
@@ -95,36 +80,19 @@ class CreateBook(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("list_book")
 
 
-class DetailBook(DetailView):
-    model = Book
-    template_name = "library/book/detail_book.html"
-
-
 class ListBook(ListView):
     model = Book
     context_object_name = "books"
     template_name = "library/book/list_book.html"
 
     def get_queryset(self):
-        model_fields = [
-            f"{field.name}__name" if field.name == "category" else field.name for field in self.model._meta.fields
-        ]
-        model_fields.remove("shelf")
-        model_fields.append("shelf__number")
-        qp = dict()
+        model_fields = [field.name for field in self.model._meta.fields]
 
-        for key, value in self.request.GET.items():
-            if key == "category":
-                qp[f"{key}__name"] = value
-                continue
-            elif key == "shelf":
-                qp[f"{key}__number"] = value
-                continue
-            else:
-                qp[key] = value
-        print(dynamic_query(qp.items(), model_fields))
+        model_fields.append("category__name")
+        model_fields.append("shelf__number")
+
         return self.model.objects.all().filter(
-            **dynamic_query(qp.items(), model_fields)
+            **dynamic_query(self.request.GET.items(), model_fields)
         )
 
 
@@ -157,11 +125,6 @@ class CreateBorrow(LoginRequiredMixin, CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class DetailBorrow(LoginRequiredMixin, DetailView):
-    model = Borrow
-    template_name = "library/borrow/detail_borrow.html"
-
-
 class ListBorrow(LoginRequiredMixin, ListView):
     model = Borrow
     context_object_name = "borrows"
@@ -169,7 +132,12 @@ class ListBorrow(LoginRequiredMixin, ListView):
     success_url = "/"
 
     def get_queryset(self):
-        model_fields = ["book__title", "member__firstName", "member__lastName"]
+        model_fields = [field.name for field in self.model._meta.fields]
+
+        model_fields.append("book__title")
+        model_fields.append("member__firstName")
+        model_fields.append("member__lastName")
+
         return self.model.objects.all().filter(
             **dynamic_query(self.request.GET.items(), model_fields)
         )
@@ -207,18 +175,18 @@ class CreateReturn(LoginRequiredMixin, CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class DetailReturn(LoginRequiredMixin, DetailView):
-    model = Return
-    template_name = "library/return/detail_return.html"
-
-
 class ListReturn(LoginRequiredMixin, ListView):
     model = Return
     context_object_name = "returns"
     template_name = "library/return/list_return.html"
 
     def get_queryset(self):
-        model_fields = ["borrow__book__title", "borrow__member__firstName", "borrow__member__lastName"]
+        model_fields = [field.name for field in self.model._meta.fields]
+
+        model_fields.append("borrow__book__title")
+        model_fields.append("borrow__member__firstName")
+        model_fields.append("borrow__member__lastName")
+
         return self.model.objects.all().filter(
             **dynamic_query(self.request.GET.items(), model_fields)
         )

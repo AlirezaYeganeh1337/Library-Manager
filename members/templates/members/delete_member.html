@@ -1,4 +1,5 @@
 {% extends "base-delete.html" %}
 
 {% block title %}Delete Member{% endblock %}
-{% block cancel %}{% url 'list_member' %}{% endblock %}
+
+{% block cancel_url %}{% url 'list_member' %}{% endblock %}

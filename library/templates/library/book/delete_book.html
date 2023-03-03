@@ -1,4 +1,5 @@
 {% extends "base-delete.html" %}
 
 {% block title %}Delete Book{% endblock %}
-{% block cancel %}{% url 'list_book' %}{% endblock %}
+
+{% block cancel_url %}{% url 'list_book' %}{% endblock %}

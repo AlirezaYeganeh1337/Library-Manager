@@ -1,15 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    DetailView,
-    ListView,
-    UpdateView,
-)
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
+from LibraryManager.utils import dynamic_query
 
 from .models import Member
-from LibraryManager.utils import dynamic_query
 
 
 class ListMember(LoginRequiredMixin, ListView):
@@ -19,6 +14,7 @@ class ListMember(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         model_fields = [field.name for field in self.model._meta.fields]
+
         return self.model.objects.all().filter(
             **dynamic_query(self.request.GET.items(), model_fields)
         )
@@ -36,11 +32,6 @@ class UpdateMember(LoginRequiredMixin, UpdateView):
     fields = "__all__"
     template_name = "members/update_member.html"
     success_url = reverse_lazy("list_member")
-
-
-class DetailMember(LoginRequiredMixin, DetailView):
-    model = Member
-    template_name = "members/detail_member.html"
 
 
 class DeleteMember(LoginRequiredMixin, DeleteView):

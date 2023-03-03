@@ -8,7 +8,6 @@ urlpatterns = [
     path(
         "<int:pk>/update/", views.UpdateMember.as_view(), name="update_member"
     ),
-    path("<int:pk>/", views.DetailMember.as_view(), name="retrieve_member"),
     path(
         "<int:pk>/delete/", views.DeleteMember.as_view(), name="delete_member"
     ),

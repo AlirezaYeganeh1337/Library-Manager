@@ -10,9 +10,18 @@
 
         {% block message %}{% endblock %}
 
-        <button type="submit" class="text-white bg-blue-500 hover:bg-blue-400 rounded-md p-2">
+        <button
+            type="submit"
+            class="inline-flex justify-center items-center text-white bg-blue-500 hover:bg-blue-400 rounded-md w-24 h-16"
+        >
             Confirm
         </button>
-    <a href="{% block cancel %}{% endblock %}">Cancel</a>
+
+        <a
+            href="{% block cancel_url %}{% endblock %}"
+            class="inline-flex justify-center items-center text-white bg-teal-500 hover:bg-teal-400 rounded-md w-24 h-16"
+        >
+            Cancel
+        </a>
     </form>
 {% endblock %}
