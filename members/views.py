@@ -9,12 +9,19 @@ from django.views.generic import (
 )
 
 from .models import Member
+from LibraryManager.utils import dynamic_query
 
 
-class MemberList(LoginRequiredMixin, ListView):
+class ListMember(LoginRequiredMixin, ListView):
     model = Member
     template_name = "members/list_member.html"
     context_object_name = "members"
+
+    def get_queryset(self):
+        model_fields = [field.name for field in self.model._meta.fields]
+        return self.model.objects.all().filter(
+            **dynamic_query(self.request.GET.items(), model_fields)
+        )
 
 
 class CreateMember(LoginRequiredMixin, CreateView):

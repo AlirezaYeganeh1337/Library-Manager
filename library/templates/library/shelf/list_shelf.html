@@ -1,7 +1,13 @@
 {% extends "base-list.html" %}
 
 {% block title %}Shelves{% endblock %}
-
+{% block search %}
+    <form action="">
+        <input type="text" placeholder="Search shelf number" name="number">
+        <input type="text" placeholder="Search floor" name="floor">
+        <button type="submit">Search</button>
+    </form>
+{% endblock %}
 {% block caption %}
     <a href="{% url 'create_shelf' %}" class="text-white bg-blue-500 hover:bg-blue-400 rounded-md p-2">
         Add a new shelf
