@@ -1,11 +1,23 @@
 {% extends "base-list.html" %}
 
 {% block title %}Books{% endblock %}
-
+{% block search %}
+    <form action="">
+        <input type="text" placeholder="Search Book Title" name="title">
+        <input type="text" placeholder="Search Book author" name="author">
+        <input type="text" placeholder="Search Book publisher" name="publisher">
+        <input type="text" placeholder="Search Book publish date" name="publish_date">
+        <input type="text" placeholder="Search Book category" name="category">
+        <input type="text" placeholder="Search Book shelf" name="shelf">
+        <input type="checkbox" placeholder="Search Book available" name="is_available">
+      <button type="submit">Search</button>
+    </form>
+{% endblock %}
 {% block caption %}
     <a href="{% url 'create_book' %}" class="text-white bg-blue-500 hover:bg-blue-400 rounded-md p-2">
         Add a new book
     </a>
+
 {% endblock %}
 
 {% block thead %}
@@ -60,7 +72,7 @@
 
             <td class="px-6 py-4">{{ book.shelf }}</td>
 
-            <td class="px-6 py-4">{{ book.is_available }}</td>
+            <td class="px-6 py-4">{{ book.is_available|yesno:"Yes,No" }}</td>
 
             <td class="px-6 py-4 text-right">
                 <a

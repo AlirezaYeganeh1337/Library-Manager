@@ -1,7 +1,12 @@
 {% extends "base-list.html" %}
 
 {% block title %}Categories{% endblock %}
-
+{% block search %}
+    <form action="">
+        <input type="text" placeholder="Search Category Name" name="name">
+        <button type="submit">Search</button>
+    </form>
+{% endblock %}
 {% block caption %}
     <a href="{% url 'create_category' %}" class="text-white bg-blue-500 hover:bg-blue-400 rounded-md p-2">
         Add a new category

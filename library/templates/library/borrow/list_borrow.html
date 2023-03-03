@@ -1,7 +1,14 @@
 {% extends "base-list.html" %}
 
 {% block title %}Borrowings{% endblock %}
-
+{% block search %}
+    <form action="">
+        <input type="text" placeholder="Search Book Title" name="book__title">
+        <input type="text" placeholder="Search Borrower Firstname" name="member__firstName">
+        <input type="text" placeholder="Search Borrower Lastname" name="member__lastName">
+      <button type="submit">Search</button>
+    </form>
+{% endblock %}
 {% block caption %}
     <a href="{% url 'create_borrow' %}" class="text-white bg-blue-500 hover:bg-blue-400 rounded-md p-2">
         Borrow a book
@@ -47,7 +54,7 @@
 
             <td class="px-6 py-4">{{ borrow.due_date }}</td>
 
-            <td class="px-6 py-4">{{ borrow.returned }}</td>
+            <td class="px-6 py-4">{{ borrow.returned|yesno:"Yes,No" }}</td>
 
             <td class="px-6 py-4 text-right">
                 <a

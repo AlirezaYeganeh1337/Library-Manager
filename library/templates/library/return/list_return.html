@@ -1,7 +1,14 @@
 {% extends "base-list.html" %}
 
 {% block title %}Returns{% endblock %}
-
+{% block search %}
+    <form action="">
+        <input type="text" placeholder="Search Book Title" name="borrow__book__title">
+        <input type="text" placeholder="Search Borrower Firstname" name="borrow__member__firstName">
+        <input type="text" placeholder="Search Borrower Lastname" name="borrow__member__lastName">
+        <button type="submit">Search</button>
+    </form>
+{% endblock %}
 {% block caption %}
     <a href="{% url 'create_return' %}" class="text-white bg-blue-500 hover:bg-blue-400 rounded-md p-2">
         Return a book

@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
+
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -10,6 +11,7 @@ from django.views.generic import (
 )
 
 from .models import Book, Borrow, Category, Return, Shelf
+from LibraryManager.utils import dynamic_query
 
 
 class CreateShelf(LoginRequiredMixin, CreateView):
@@ -28,6 +30,12 @@ class ListShelf(LoginRequiredMixin, ListView):
     model = Shelf
     context_object_name = "shelves"
     template_name = "library/shelf/list_shelf.html"
+
+    def get_queryset(self):
+        model_fields = [field.name for field in self.model._meta.fields]
+        return self.model.objects.all().filter(
+            **dynamic_query(self.request.GET.items(), model_fields)
+        )
 
 
 class UpdateShelf(LoginRequiredMixin, UpdateView):
@@ -60,6 +68,12 @@ class ListCategory(ListView):
     context_object_name = "categories"
     template_name = "library/category/list_categories.html"
 
+    def get_queryset(self):
+        model_fields = [field.name for field in self.model._meta.fields]
+        return self.model.objects.all().filter(
+            **dynamic_query(self.request.GET.items(), model_fields)
+        )
+
 
 class UpdateCategory(LoginRequiredMixin, UpdateView):
     model = Category
@@ -90,6 +104,28 @@ class ListBook(ListView):
     model = Book
     context_object_name = "books"
     template_name = "library/book/list_book.html"
+
+    def get_queryset(self):
+        model_fields = [
+            f"{field.name}__name" if field.name == "category" else field.name for field in self.model._meta.fields
+        ]
+        model_fields.remove("shelf")
+        model_fields.append("shelf__number")
+        qp = dict()
+
+        for key, value in self.request.GET.items():
+            if key == "category":
+                qp[f"{key}__name"] = value
+                continue
+            elif key == "shelf":
+                qp[f"{key}__number"] = value
+                continue
+            else:
+                qp[key] = value
+        print(dynamic_query(qp.items(), model_fields))
+        return self.model.objects.all().filter(
+            **dynamic_query(qp.items(), model_fields)
+        )
 
 
 class UpdateBook(LoginRequiredMixin, UpdateView):
@@ -132,6 +168,12 @@ class ListBorrow(LoginRequiredMixin, ListView):
     template_name = "library/borrow/list_borrow.html"
     success_url = "/"
 
+    def get_queryset(self):
+        model_fields = ["book__title", "member__firstName", "member__lastName"]
+        return self.model.objects.all().filter(
+            **dynamic_query(self.request.GET.items(), model_fields)
+        )
+
 
 class UpdateBorrow(LoginRequiredMixin, UpdateView):
     model = Borrow
@@ -154,10 +196,13 @@ class CreateReturn(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         borrow = form.cleaned_data.get("borrow")
+        book = borrow.book
         if borrow.returned:
             return HttpResponse("already returned")
         borrow.returned = True
         borrow.save()
+        book.is_available = True
+        book.save()
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -171,6 +216,12 @@ class ListReturn(LoginRequiredMixin, ListView):
     model = Return
     context_object_name = "returns"
     template_name = "library/return/list_return.html"
+
+    def get_queryset(self):
+        model_fields = ["borrow__book__title", "borrow__member__firstName", "borrow__member__lastName"]
+        return self.model.objects.all().filter(
+            **dynamic_query(self.request.GET.items(), model_fields)
+        )
 
 
 class UpdateReturn(LoginRequiredMixin, UpdateView):
